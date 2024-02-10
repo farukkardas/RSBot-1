@@ -272,6 +272,7 @@ public class LanguageManager
 
     public static Dictionary<string, string> GetLanguages()
     {
+        var path = _path;
         var filePath = Path.Combine(_path, "langs.rsl");
         if (!File.Exists(filePath))
         {

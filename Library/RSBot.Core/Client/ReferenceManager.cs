@@ -114,7 +114,7 @@ public class ReferenceManager
 
     private void LoadLevelData()
     {
-        LoadReferenceFile($"{ServerDep}\\LevelData.txt", LevelData);
+        LoadReferenceFile($"{ServerDep}\\leveldata.txt", LevelData);
     }
 
     private void LoadShopData()

@@ -35,7 +35,7 @@ public static class NavMeshManager
 
         LoadMapInfo("NavMesh\\MapInfo.mfo");
         LoadObjectIndex("NavMesh\\Object.ifo");
-        LoadDungeonInfo("Dungeon\\DungeonInfo.txt");
+      //  LoadDungeonInfo("Dungeon\\DungeonInfo.txt");
         //LoadObjectString("NavMesh/ObjectString.ifo"); // EventZone data
 
         //_terrainCache.EnsureCapacity(RegionManager.ActiveRegions);
