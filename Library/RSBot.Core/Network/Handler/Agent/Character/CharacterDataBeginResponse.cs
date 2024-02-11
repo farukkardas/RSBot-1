@@ -1,6 +1,6 @@
 ﻿namespace RSBot.Core.Network.Handler.Agent.Character;
 
-internal class CharacterDataBeginResponse : IPacketHandler
+internal class CharacterDataBeginResponse 
 {
     /// <summary>
     ///     Gets or sets the opcode.
@@ -22,12 +22,14 @@ internal class CharacterDataBeginResponse : IPacketHandler
     ///     Handles the packet.
     /// </summary>
     /// <param name="packet">The packet.</param>
-    public void Invoke(Packet packet)
-    {
-        Game.Player?.StopMoving();
-        Game.ChunkedPacket = new Packet(0);
+    //public void Invoke(Packet packet)
+    //{
+    //    // NO WORKING FOR OLD CLIENTS - PROJECT 65
 
-        if (Game.Clientless)
-            Game.Ready = false;
-    }
+    //    Game.Player?.StopMoving();
+    //    Game.ChunkedPacket = new Packet(0);
+
+    //    if (Game.Clientless)
+    //        Game.Ready = false;
+    //}
 }

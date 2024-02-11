@@ -33,7 +33,7 @@ internal class CharacterDataResponse : IPacketHandler
         {
             Game.ChunkedPacket = new Packet(0);
         }
-          
+
         Game.ChunkedPacket.WriteByteArray(packet.GetBytes());
         PreparePlayer(packet);
     }
@@ -46,11 +46,6 @@ internal class CharacterDataResponse : IPacketHandler
         packet = Game.ChunkedPacket;
         packet.Lock();
 
-        if (Game.ClientType >= GameClientType.Thailand)
-        {
-    //       var x = packet.ReadByte();
-        }
-        // serverTimestamp 
         var modelId = packet.ReadUInt();
 
         var character = new Player(modelId);
@@ -77,11 +72,6 @@ internal class CharacterDataResponse : IPacketHandler
         character.TotalPK = packet.ReadUShort();
         character.PKPenaltyPoint = packet.ReadUInt();
 
-        if (Game.ClientType >= GameClientType.Thailand)
-            character.BerzerkLevel = packet.ReadByte();
-
-        if (Game.ClientType > GameClientType.Thailand)
-            character.PvpFlag = (PvpFlag)packet.ReadByte();
 
         if (Game.ClientType >= GameClientType.Global)
         {
@@ -122,7 +112,7 @@ internal class CharacterDataResponse : IPacketHandler
         }
 
         character.Skills = Skills.FromPacket(packet);
-        character.QuestLog = QuestLog.FromPacket(packet);
+        //character.QuestLog = QuestLog.FromPacket(packet);
 
         packet.ReadByte(); // Unknown
 

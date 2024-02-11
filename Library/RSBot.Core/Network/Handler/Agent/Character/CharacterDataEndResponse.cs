@@ -5,7 +5,7 @@ using RSBot.Core.Objects.Quests;
 
 namespace RSBot.Core.Network.Handler.Agent.Character;
 
-internal class CharacterDataEndResponse : IPacketHandler
+internal class CharacterDataEndResponse
 {
     /// <summary>
     ///     Gets or sets the opcode.
@@ -27,156 +27,158 @@ internal class CharacterDataEndResponse : IPacketHandler
     ///     Handles the packet.
     /// </summary>
     /// <param name="packet">The packet.</param>
-    public void Invoke(Packet packet)
-    {
-        SpawnManager.Clear();
+    //public void Invoke(Packet packet)
+    //{
+        // NO WORKING FOR OLD CLIENTS - PROJECT 65
 
-        packet = Game.ChunkedPacket;
-        packet.Lock();
+    //    SpawnManager.Clear();
 
-        if (Game.ClientType >= GameClientType.Thailand)
-            packet.ReadUInt(); // serverTimestamp 
+    //    packet = Game.ChunkedPacket;
+    //    packet.Lock();
 
-        var modelId = packet.ReadUInt();
+    //    if (Game.ClientType >= GameClientType.Thailand)
+    //        packet.ReadUInt(); // serverTimestamp 
 
-        var character = new Player(modelId);
-        character.Scale = packet.ReadByte();
-        character.Level = packet.ReadByte();
-        character.MaxLevel = packet.ReadByte();
-        character.Experience = packet.ReadLong();
-        character.SkillExperience = packet.ReadUInt();
-        character.Gold = packet.ReadULong();
-        character.SkillPoints = packet.ReadUInt();
-        character.StatPoints = packet.ReadUShort();
-        character.BerzerkPoints = packet.ReadByte();
-        character.ExperienceChunk = packet.ReadUInt();
-        character.Health = packet.ReadInt();
-        character.Mana = packet.ReadInt();
-        character.AutoInverstExperience = (AutoInverstType)packet.ReadByte();
+    //    var modelId = packet.ReadUInt();
 
-        if (Game.ClientType == GameClientType.Chinese)
-            character.DailyPK = (byte)packet.ReadUShort();
-        else
-            character.DailyPK = packet.ReadByte();
+    //    var character = new Player(modelId);
+    //    character.Scale = packet.ReadByte();
+    //    character.Level = packet.ReadByte();
+    //    character.MaxLevel = packet.ReadByte();
+    //    character.Experience = packet.ReadLong();
+    //    character.SkillExperience = packet.ReadUInt();
+    //    character.Gold = packet.ReadULong();
+    //    character.SkillPoints = packet.ReadUInt();
+    //    character.StatPoints = packet.ReadUShort();
+    //    character.BerzerkPoints = packet.ReadByte();
+    //    character.ExperienceChunk = packet.ReadUInt();
+    //    character.Health = packet.ReadInt();
+    //    character.Mana = packet.ReadInt();
+    //    character.AutoInverstExperience = (AutoInverstType)packet.ReadByte();
 
-        character.TotalPK = packet.ReadUShort();
-        character.PKPenaltyPoint = packet.ReadUInt();
+    //    if (Game.ClientType == GameClientType.Chinese)
+    //        character.DailyPK = (byte)packet.ReadUShort();
+    //    else
+    //        character.DailyPK = packet.ReadByte();
 
-        if (Game.ClientType >= GameClientType.Thailand)
-            character.BerzerkLevel = packet.ReadByte();
+    //    character.TotalPK = packet.ReadUShort();
+    //    character.PKPenaltyPoint = packet.ReadUInt();
 
-        if (Game.ClientType > GameClientType.Thailand)
-            character.PvpFlag = (PvpFlag)packet.ReadByte();
+    //    if (Game.ClientType >= GameClientType.Thailand)
+    //        character.BerzerkLevel = packet.ReadByte();
 
-        if (Game.ClientType >= GameClientType.Global)
-        {
-            packet.ReadByte();
-            packet.ReadUInt();
-            packet.ReadByte();
+    //    if (Game.ClientType > GameClientType.Thailand)
+    //        character.PvpFlag = (PvpFlag)packet.ReadByte();
 
-            if (Game.ClientType == GameClientType.Turkey ||
-                Game.ClientType == GameClientType.VTC_Game)
-                packet.ReadUInt();
+    //    if (Game.ClientType >= GameClientType.Global)
+    //    {
+    //        packet.ReadByte();
+    //        packet.ReadUInt();
+    //        packet.ReadByte();
 
-            if (Game.ClientType == GameClientType.Rigid)
-                packet.ReadByteArray(12);
+    //        if (Game.ClientType == GameClientType.Turkey ||
+    //            Game.ClientType == GameClientType.VTC_Game)
+    //            packet.ReadUInt();
 
-            if (Game.ClientType == GameClientType.VTC_Game)
-                packet.ReadByte(); // ??
+    //        if (Game.ClientType == GameClientType.Rigid)
+    //            packet.ReadByteArray(12);
 
-            var serverCap = packet.ReadByte();
-            Log.Notify($"The game server cap is {serverCap}!");
+    //        if (Game.ClientType == GameClientType.VTC_Game)
+    //            packet.ReadByte(); // ??
 
-            if (Game.ClientType != GameClientType.Korean)
-                packet.ReadUShort();
-        }
+    //        var serverCap = packet.ReadByte();
+    //        Log.Notify($"The game server cap is {serverCap}!");
 
-        character.Inventory = new CharacterInventory(packet);
+    //        if (Game.ClientType != GameClientType.Korean)
+    //            packet.ReadUShort();
+    //    }
 
-        if (Game.ClientType >= GameClientType.Thailand)
-            character.Avatars = new InventoryItemCollection(packet);
-        else
-            character.Avatars = new InventoryItemCollection(5);
+    //    character.Inventory = new CharacterInventory(packet);
 
-        // JOB2
-        if (Game.ClientType > GameClientType.Vietnam)
-        {
-            character.Job2SpecialtyBag = new InventoryItemCollection(packet);
+    //    if (Game.ClientType >= GameClientType.Thailand)
+    //        character.Avatars = new InventoryItemCollection(packet);
+    //    else
+    //        character.Avatars = new InventoryItemCollection(5);
 
-            character.Job2 = new InventoryItemCollection(packet);
-        }
+    //    // JOB2
+    //    if (Game.ClientType > GameClientType.Vietnam)
+    //    {
+    //        character.Job2SpecialtyBag = new InventoryItemCollection(packet);
 
-        character.Skills = Skills.FromPacket(packet);
-        character.QuestLog = QuestLog.FromPacket(packet);
+    //        character.Job2 = new InventoryItemCollection(packet);
+    //    }
 
-        packet.ReadByte(); // Unknown
+    //    character.Skills = Skills.FromPacket(packet);
+    //    character.QuestLog = QuestLog.FromPacket(packet);
 
-        if (Game.ClientType > GameClientType.Thailand)
-        {
-            var collectionBookStartedThemeCount = packet.ReadUInt();
-            for (var i = 0; i < collectionBookStartedThemeCount; i++)
-            {
-                packet.ReadUInt(); //index
-                packet.ReadUInt(); //Starttime
-                packet.ReadUInt(); //pages
-            }
-        }
+    //    packet.ReadByte(); // Unknown
 
-        character.ParseBionicDetails(packet);
+    //    if (Game.ClientType > GameClientType.Thailand)
+    //    {
+    //        var collectionBookStartedThemeCount = packet.ReadUInt();
+    //        for (var i = 0; i < collectionBookStartedThemeCount; i++)
+    //        {
+    //            packet.ReadUInt(); //index
+    //            packet.ReadUInt(); //Starttime
+    //            packet.ReadUInt(); //pages
+    //        }
+    //    }
 
-        character.Name = packet.ReadString();
-        character.JobInformation = JobInfo.FromPacket(packet);
-        character.State.PvpState = (PvpState)packet.ReadByte();
-        character.OnTransport = packet.ReadBool(); //On transport?
-        character.InCombat = packet.ReadBool();
+    //    character.ParseBionicDetails(packet);
 
-        if (Game.ClientType > GameClientType.Chinese)
-            packet.ReadByte();
+    //    character.Name = packet.ReadString();
+    //    character.JobInformation = JobInfo.FromPacket(packet);
+    //    character.State.PvpState = (PvpState)packet.ReadByte();
+    //    character.OnTransport = packet.ReadBool(); //On transport?
+    //    character.InCombat = packet.ReadBool();
 
-        if (character.OnTransport)
-            character.TransportUniqueId = packet.ReadUInt();
+    //    if (Game.ClientType > GameClientType.Chinese)
+    //        packet.ReadByte();
 
-        if (Game.ClientType > GameClientType.Chinese)
-            packet.ReadUInt(); //unkUint2 i think it is using for balloon event or buff for events
+    //    if (character.OnTransport)
+    //        character.TransportUniqueId = packet.ReadUInt();
 
-        if (Game.ClientType > GameClientType.Vietnam)
-            packet.ReadByte();
+    //    if (Game.ClientType > GameClientType.Chinese)
+    //        packet.ReadUInt(); //unkUint2 i think it is using for balloon event or buff for events
 
-        packet.ReadByte(); //PVP dress for the CTF event //0 = Red Side, 1 = Blue Side, 0xFF = None
+    //    if (Game.ClientType > GameClientType.Vietnam)
+    //        packet.ReadByte();
 
-        if (Game.ClientType > GameClientType.Chinese &&
-            Game.ClientType != GameClientType.Global &&
-            Game.ClientType != GameClientType.Rigid)
-        {
-            packet.ReadByte(); // 0xFF
-            packet.ReadUShort(); // 0xFF
-            packet.ReadUShort(); // 0xFF
-        }
+    //    packet.ReadByte(); //PVP dress for the CTF event //0 = Red Side, 1 = Blue Side, 0xFF = None
 
-        //GuideFlag
-        if (Game.ClientType >= GameClientType.Thailand)
-            packet.ReadULong();
-        else
-            packet.ReadUInt();
+    //    if (Game.ClientType > GameClientType.Chinese &&
+    //        Game.ClientType != GameClientType.Global &&
+    //        Game.ClientType != GameClientType.Rigid)
+    //    {
+    //        packet.ReadByte(); // 0xFF
+    //        packet.ReadUShort(); // 0xFF
+    //        packet.ReadUShort(); // 0xFF
+    //    }
 
-        if (Game.ClientType == GameClientType.Chinese || Game.ClientType == GameClientType.Global)
-            packet.ReadByte();
+    //    //GuideFlag
+    //    if (Game.ClientType >= GameClientType.Thailand)
+    //        packet.ReadULong();
+    //    else
+    //        packet.ReadUInt();
 
-        character.JID = packet.ReadUInt();
-        character.IsGameMaster = packet.ReadBool();
+    //    if (Game.ClientType == GameClientType.Chinese || Game.ClientType == GameClientType.Global)
+    //        packet.ReadByte();
 
-        //Set instance..
-        Game.Player = character;
-        Game.ChunkedPacket = null;
+    //    character.JID = packet.ReadUInt();
+    //    character.IsGameMaster = packet.ReadBool();
 
-        EventManager.FireEvent("OnLoadCharacter");
+    //    //Set instance..
+    //    Game.Player = character;
+    //    Game.ChunkedPacket = null;
 
-        ClientManager.SetTitle($"{character.Name} - RSBot");
+    //    EventManager.FireEvent("OnLoadCharacter");
 
-        if (!Game.Clientless)
-            return;
+    //    ClientManager.SetTitle($"{character.Name} - RSBot");
 
-        PacketManager.SendPacket(new Packet(0x3012), PacketDestination.Server);
-        Game.Ready = true;
-    }
+    //    if (!Game.Clientless)
+    //        return;
+
+    //    PacketManager.SendPacket(new Packet(0x3012), PacketDestination.Server);
+    //    Game.Ready = true;
+    //}
 }
